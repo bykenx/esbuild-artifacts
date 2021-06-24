@@ -5,6 +5,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "esbuild": "^0.12.9"
+    "esbuild": "^0.12.9",
+    "typescript": "^4.3.4"
   }
 }
