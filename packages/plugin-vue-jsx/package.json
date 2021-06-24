@@ -1,0 +1,8 @@
+{
+  "name": "plugin-vue-jsx",
+  "version": "0.0.1",
+  "description": "esbuild vue-jsx plugin",
+  "main": "index.js",
+  "author": "byken",
+  "license": "MIT"
+}
