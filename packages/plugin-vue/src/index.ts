@@ -91,7 +91,6 @@ export const vuePlugin = (userOptions: Partial<IVuePluginOptions> = {}) => ({
             watchFiles
           }
         }
-        console.log('args: ', args)
         const descriptor = getDescriptor(query.filename)
         let loader: Loader = 'default'
         if (descriptor) {
