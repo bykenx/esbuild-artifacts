@@ -6,7 +6,7 @@ A simple esbuild plugin to generate html file.
 
 ## Usage
 ```js
-import { htmlPlugin } from '@byken/esbuild-plugin-vue'
+import { htmlPlugin } from '@byken/esbuild-plugin-html'
 import esbuild from 'esbuild'
 
 esbuild.build({
