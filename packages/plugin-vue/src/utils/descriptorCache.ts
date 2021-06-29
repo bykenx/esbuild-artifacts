@@ -1,5 +1,3 @@
-// copy from https://github.com/vuejs/rollup-plugin-vue/blob/next/src/utils/descriptorCache.ts
-
 import { SFCDescriptor } from '@vue/compiler-sfc'
 
 const cache = new Map<string, SFCDescriptor>()

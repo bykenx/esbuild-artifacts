@@ -3,15 +3,14 @@ import {
   SFCDescriptor,
   SFCTemplateCompileOptions,
 } from '@vue/compiler-sfc'
-import { IVuePluginOptions } from './interface'
+import { IVuePluginOptions, ITemplateBlockQuery } from './interface'
 import { getResolvedScript } from './script'
 import { getDescriptor } from './utils/descriptorCache'
-import { TemplateBlockQuery } from './utils/query'
 
 export function transformTemplate(
   code: string,
   options: IVuePluginOptions,
-  query: TemplateBlockQuery
+  query: ITemplateBlockQuery
 ) {
   const descriptor = getDescriptor(query.filename)
   const result = compileTemplate({
@@ -23,7 +22,7 @@ export function transformTemplate(
 
   if (result.errors.length) {
     // TODO: 添加错误处理
-    return null
+    return undefined
   }
 
   if (result.tips.length) {

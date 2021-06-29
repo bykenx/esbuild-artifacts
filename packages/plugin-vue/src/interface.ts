@@ -1,6 +1,4 @@
-import { SFCAsyncStyleCompileOptions, SFCTemplateCompileOptions } from "@vue/compiler-sfc";
-
-// copy from https://github.com/vuejs/rollup-plugin-vue
+import { SFCAsyncStyleCompileOptions, SFCTemplateCompileOptions } from "@vue/compiler-sfc"
 
 export interface IVuePluginOptions {
   target: 'node' | 'browser'
@@ -27,4 +25,34 @@ export interface IVuePluginOptions {
   cssModulesOptions?: SFCAsyncStyleCompileOptions['modulesOptions']
   preprocessCustomRequire?: SFCAsyncStyleCompileOptions['preprocessCustomRequire']
   preprocessOptions?: SFCAsyncStyleCompileOptions['preprocessOptions']
+}
+
+export interface IScriptBlockQuery {
+  filename: string
+  type: 'script'
+  src?: true
+}
+
+export interface ITemplateBlockQuery {
+  filename: string
+  type: 'template'
+  id: string
+  src?: true
+}
+
+export interface IStyleBlockQuery {
+  filename: string
+  type: 'style'
+  index: number
+  id: string
+  scoped?: boolean
+  module?: string | boolean
+  src?: true
+}
+
+export interface ICustomBlockQuery {
+  filename: string
+  type: 'custom'
+  index: number
+  src?: true
 }
