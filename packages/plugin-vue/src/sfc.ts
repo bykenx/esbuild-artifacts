@@ -16,11 +16,7 @@ export function transformSFCEntry(
   isServer: boolean,
   filterCustomBlock: (type: string) => boolean,
 ) {
-  const { descriptor, errors } = parse(code, {
-    sourceMap: true,
-    filename,
-    sourceRoot,
-  })
+  const { descriptor, errors } = parse(code, { sourceMap: false, filename, sourceRoot })
   setDescriptor(filename, descriptor)
 
   if (errors.length > 0) {
@@ -30,49 +26,34 @@ export function transformSFCEntry(
 
   const shortFilePath = slash(path.resolve(sourceRoot, filename))
 
+  // scoped style
   const scopeId = hash(isProduction ? shortFilePath + '\n' + code : shortFilePath)
-
-  // has scoped style
   const hasScoped = descriptor.styles.some(s => s.scoped)
 
   const isTemplateInlined = descriptor.scriptSetup && !descriptor.template?.src
-
   const hasTemplateImport = descriptor.template && !isTemplateInlined
 
-  const templateImport = hasTemplateImport
-    ? genTemplateCode(descriptor, scopeId, isServer)
-    : ''
+  const output = []
 
-  const renderReplace = hasTemplateImport
-    ? isServer
-      ? `script.ssrRender = ssrRender`
-      : `script.render = render`
-    : ''
+  // <template src />
+  hasTemplateImport && output.push(genTemplateCode(descriptor, scopeId, isServer))
+  // <script> or <script setup>
+  output.push(genScriptCode(descriptor, scopeId, isProduction, isServer, options))
+  // <style> or <style scoped />, etc.
+  output.push(genStyleCode(descriptor, scopeId, options.preprocessStyles))
+  // <block-name>
+  output.push(genCustomBlock(descriptor, filterCustomBlock))
 
-  const scriptImport = genScriptCode(descriptor, scopeId, isProduction, isServer, options)
-  const styleCode = genStyleCode(descriptor, scopeId, options.preprocessStyles)
-  const customBlockCode = genCustomBlock(descriptor, filterCustomBlock)
-
-  const output = [
-    scriptImport,
-    templateImport,
-    styleCode,
-    customBlockCode,
-    renderReplace,
-  ]
-
-  if (hasScoped) {
-    output.push(`script.__scopeId = ${JSON.stringify(`data-v-${scopeId}`)}`)
-  }
+  hasTemplateImport && isServer && output.push(`script.ssrRender = ssrRender`)
+  hasTemplateImport && !isServer && output.push(`script.render = render`)
+  hasScoped && output.push(`script.__scopeId = ${JSON.stringify(`data-v-${scopeId}`)}`)
 
   if (!isProduction) {
     output.push(`script.__file = ${JSON.stringify(shortFilePath)}`)
   } else if (options.exposeFilename) {
-    output.push(
-      `script.__file = ${JSON.stringify(path.basename(shortFilePath))}`
-    )
+    output.push(`script.__file = ${JSON.stringify(path.basename(shortFilePath))}`)
   }
-
+  // end
   output.push(`export default script`)
 
   return output.join(`\n`)
@@ -109,13 +90,7 @@ function genScriptCode(
   options: IVuePluginOptions
 ) {
   let scriptImport = `const script = {}`
-  const script = resolveScript(
-    descriptor,
-    scopeId,
-    isProduction,
-    isServer,
-    options,
-  )
+  const script = resolveScript(descriptor, scopeId, isProduction, isServer, options)
   if (script) {
     const src = script.src || descriptor.filename
     const attrsQuery = attrsToQuery(script.attrs, 'js')
@@ -130,7 +105,6 @@ function genScriptCode(
   return scriptImport
 }
 
-// generate code from `style` block
 function genStyleCode(
   descriptor: SFCDescriptor,
   scopeId: string,
@@ -142,10 +116,7 @@ function genStyleCode(
     descriptor.styles.forEach((style, i) => {
       const src = style.src || descriptor.filename
       const attrsQuery = attrsToQuery(style.attrs, 'css', preprocessStyles)
-      const attrsQueryWithoutModule = attrsQuery.replace(
-        /&module(=true|=[^&]+)?/,
-        ''
-      )
+      const attrsQueryWithoutModule = attrsQuery.replace(/&module(=true|=[^&]+)?/, '')
       const idQuery = `&id=${scopeId}`
       const srcQuery = style.src ? `&src` : ``
       const query = `?vue&type=style&index=${i}${srcQuery}${idQuery}`
@@ -166,7 +137,6 @@ function genStyleCode(
   return stylesCode
 }
 
-// generate from `<blockName>`
 function genCustomBlock(
   descriptor: SFCDescriptor,
   filter: (type: string) => boolean
@@ -184,11 +154,9 @@ function genCustomBlock(
       code += `if (typeof block${index} === 'function') block${index}(script)\n`
     }
   })
-
   return code
 }
 
-// css module
 function genCSSModulesCode(
   index: number,
   request: string,
@@ -202,8 +170,6 @@ function genCSSModulesCode(
     + `import ${styleVar} from ${JSON.stringify(request + '.js')}`
 
   const name = typeof moduleName === 'string' ? moduleName : '$style'
-
   code += `\ncssModules["${name}"] = ${styleVar}`
-
   return code
 }

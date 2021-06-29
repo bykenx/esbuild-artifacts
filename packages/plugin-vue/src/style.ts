@@ -2,19 +2,17 @@ import {
   compileStyleAsync,
   SFCAsyncStyleCompileOptions,
 } from '@vue/compiler-sfc'
-import { IVuePluginOptions } from './interface'
+import { IVuePluginOptions, IStyleBlockQuery } from './interface'
 import { getDescriptor } from './utils/descriptorCache'
-import { StyleBlockQuery } from './utils/query'
 
 export async function transformStyle(
   code: string,
   options: IVuePluginOptions,
-  query: StyleBlockQuery,
+  query: IStyleBlockQuery,
   isProduction: boolean
 ) {
   const descriptor = getDescriptor(query.filename)
   const block = descriptor.styles[query.index]!
-
   let preprocessOptions = options.preprocessOptions || {}
   const preprocessLang = (options.preprocessStyles
     ? block.lang
@@ -56,10 +54,9 @@ export async function transformStyle(
     preprocessCustomRequire: options.preprocessCustomRequire,
     preprocessOptions,
   })
-
-  if (result.errors.length) {
+  if (result.errors.length > 0) {
     // TODO: 添加错误处理
-    return null
+    return undefined
   }
 
   if (query.module) {
