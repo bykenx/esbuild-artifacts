@@ -1,5 +1,5 @@
 {
-  "name": "@byken/esbuild-plugin-vue",
+  "name": "esbuild-plugin-vue-sfc",
   "version": "0.0.2",
   "description": "esbuild vue plugin",
   "main": "dist/index.js",

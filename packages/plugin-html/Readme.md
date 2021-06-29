@@ -1,4 +1,4 @@
-# @byken/esbuild-plugin-html
+# esbuild-plugin-html-template
 
 ## Description
 A simple esbuild plugin to generate html file.
@@ -6,7 +6,7 @@ A simple esbuild plugin to generate html file.
 
 ## Usage
 ```js
-import { htmlPlugin } from '@byken/esbuild-plugin-html'
+import { htmlPlugin } from 'esbuild-plugin-html-template'
 import esbuild from 'esbuild'
 
 esbuild.build({

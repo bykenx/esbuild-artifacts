@@ -1,5 +1,5 @@
 {
-  "name": "@byken/esbuild-plugin-html",
+  "name": "esbuild-plugin-html-template",
   "version": "0.0.2",
   "description": "esbuild html plugin",
   "main": "dist/index.js",
