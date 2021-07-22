@@ -1,0 +1,15 @@
+{
+  "name": "byken-esbuild-plugin-shared",
+  "version": "0.0.1",
+  "description": "shared parts of esbuild plugins",
+  "main": "dist/index.js",
+  "author": "byken",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b"
+  }
+}
