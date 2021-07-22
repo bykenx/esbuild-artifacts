@@ -1,0 +1,26 @@
+{
+  "name": "esbuild-plugin-dev-server",
+  "version": "0.0.1",
+  "description": "esbuild dev server plugin",
+  "main": "dist/index.js",
+  "author": "byken",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "files": [
+    "dist"
+  ],
+  "typings": "dist/index.d.ts",
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "express": "^4.17.1",
+    "express-http-proxy": "^1.6.2",
+    "ws": "^7.5.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.12",
+    "@types/express-http-proxy": "^1.6.2",
+    "@types/ws": "^7.4.5"
+  }
+}
